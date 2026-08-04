@@ -97,8 +97,8 @@ body{background:var(--bg);color:var(--t);
   padding:3px 10px;border-radius:10px;font-weight:600}
 
 /* ─── GRID ─── */
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));
-  gap:10px;padding:0 14px 14px;max-width:1100px;margin:0 auto}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:12px;padding:0 14px 14px;max-width:1100px;margin:0 auto}
 
 /* ─── CARD ─── */
 .card{background:var(--card);border:1px solid var(--border);
@@ -200,9 +200,15 @@ body{background:var(--bg);color:var(--t);
 .empty{text-align:center;padding:50px 20px;color:var(--mt);font-size:12px}
 
 @media(max-width:500px){
-  .grid{grid-template-columns:repeat(2,1fr);gap:8px;padding:0 8px 8px}
+  .grid{grid-template-columns:1fr;gap:10px;padding:0 10px 10px}
   .hd h1{font-size:22px}
   .fab{bottom:16px;right:14px;width:48px;height:48px}
+  .card .nf .tt{font-size:14px}
+  .card .nf .mt{font-size:10px}
+  .card .th .dr{font-size:11px;padding:4px 9px}
+}
+@media(min-width:501px) and (max-width:767px){
+  .grid{grid-template-columns:repeat(2,1fr)}
 }
 @media(min-width:768px){.grid{grid-template-columns:repeat(3,1fr)}}
 @media(min-width:1024px){.grid{grid-template-columns:repeat(4,1fr)}}
