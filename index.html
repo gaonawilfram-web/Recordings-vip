@@ -394,6 +394,8 @@ function play(idx){
   document.getElementById('p-model').textContent=v.modelo;
   document.getElementById('p-date').textContent=v.fecha;
   document.getElementById('p-dur').textContent=v.duracion;
+  // Guardar en URL para que recarga funcione
+  history.pushState(null,'','#video/'+idx);
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
@@ -405,9 +407,26 @@ function closePlayer(){
   document.querySelector('.filter-bar').style.display='';
   document.querySelector('.section').style.display='';
   document.getElementById('fab').style.display='';
+  // Volver a URL limpia
+  history.pushState(null,'','#');
 }
 
-loadVideos();
+// Detectar hash al cargar o al navegar atras
+function checkHash(){
+  const h=location.hash;
+  if(h.startsWith('#video/')){
+    const idx=parseInt(h.split('/')[1]);
+    if(!isNaN(idx)&&idx>=0&&idx<VIDEOS.length) play(idx);
+  }
+}
+window.addEventListener('hashchange',checkHash);
+
+async function init(){
+  await loadVideos();
+  checkHash();
+}
+init();
 </script>
-</body>
-</html>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a25ffd57090ef482',t:'MTc4NTg3MTk2Mg=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+                             </html>
+  
