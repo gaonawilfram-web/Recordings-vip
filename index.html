@@ -508,7 +508,7 @@ body.light .ct{background:var(--card2)}
 <div class="cinema-overlay" id="cinema">
   <div class="cinema-close" onclick="closeCinema()">✕</div>
   <div class="cinema-video">
-    <video id="cinema-video" playsinline controls></video>
+    <video id="cinema-video" playsinline controls controlsList="nodownload" disablepictureinpicture oncontextmenu="return false"></video>
   </div>
   <div class="cinema-info">
     <h3 id="cinema-title"></h3>
@@ -824,10 +824,13 @@ function closeCinema(){
 // ── MINI PLAYER ──
 function activateMini(){
   if(curVideoIdx<0)return;
-  const v=V[curVideoIdx];
   const mainVid=document.getElementById('video');
-  const curTime=mainVid?mainVid.currentTime:0;
-  if(mainVid)mainVid.pause();
+  // Solo activar si el video está reproduciéndose
+  if(!mainVid||mainVid.paused||mainVid.ended)return;
+
+  const v=V[curVideoIdx];
+  const curTime=mainVid.currentTime||0;
+  mainVid.pause();
 
   const mv=document.getElementById('mini-video');
   mv.src=v.url;
@@ -836,27 +839,20 @@ function activateMini(){
   document.getElementById('mp-title').textContent=v.titulo;
   document.getElementById('miniplayer').classList.add('on');
   miniActive=true;
-
-  // Cerrar player principal y mostrar galeria
-  document.getElementById('player').classList.remove('on');
-  ['gallery','pag','fbar','sec-title','fav-bar'].forEach(id=>{
-    const e=document.getElementById(id);if(e)e.style.display=''});
-  document.querySelector('.stats').parentElement.style.display='';
-  document.getElementById('fab').style.display='';
 }
 function restorePlayer(){
   if(curVideoIdx<0)return;
   const mv=document.getElementById('mini-video');
   const curTime=mv.currentTime||0;
-  mv.pause();
+  mv.pause();mv.src='';
   document.getElementById('miniplayer').classList.remove('on');
   miniActive=false;
-  play(curVideoIdx);
-  // Restaurar tiempo
+  // Volver al player principal con el tiempo
+  window.scrollTo({top:0,behavior:'smooth'});
   setTimeout(()=>{
     const vid=document.getElementById('video');
-    if(vid){try{vid.currentTime=curTime}catch(e){}}
-  },500);
+    if(vid){try{vid.currentTime=curTime;vid.play().catch(()=>{})}catch(e){}}
+  },400);
 }
 function closeMini(){
   const mv=document.getElementById('mini-video');
@@ -866,18 +862,27 @@ function closeMini(){
 }
 
 // Detectar scroll para activar mini player
-let lastScrollY=0;
 window.addEventListener('scroll',()=>{
   if(curVideoIdx<0||miniActive)return;
+  const pp=document.getElementById('player');
+  if(!pp.classList.contains('on'))return;
+  const mainVid=document.getElementById('video');
+  if(!mainVid||mainVid.paused||mainVid.ended)return;
+  const pc=document.querySelector('.pc');
+  if(!pc)return;
+  const rect=pc.getBoundingClientRect();
+  if(rect.bottom<-50){activateMini()}
+},{passive:true});
+
+// Detectar scroll arriba para cerrar mini y restaurar
+window.addEventListener('scroll',()=>{
+  if(!miniActive||curVideoIdx<0)return;
   const pp=document.getElementById('player');
   if(!pp.classList.contains('on'))return;
   const pc=document.querySelector('.pc');
   if(!pc)return;
   const rect=pc.getBoundingClientRect();
-  // Si el reproductor salió de la pantalla hacia arriba
-  if(rect.bottom<-100&&!miniActive){
-    activateMini();
-  }
+  if(rect.bottom>0){restorePlayer()}
 },{passive:true});
 
 // ── SHARE ──
