@@ -807,8 +807,8 @@ let curVideoIdx=-1;
 let miniActive=false;
 
 function resetVideoElement(){
-  const pc=document.querySelector('.pc');
-  pc.innerHTML='<video id="video" playsinline controls preload="auto"></video>';
+  const vid=document.getElementById('video');
+  if(vid){vid.pause();vid.removeAttribute('src');vid.load()}
 }
 
 function play(i){
@@ -827,8 +827,49 @@ function play(i){
   resetVideoElement();
   const vid=document.getElementById('video');
   vid.src=v.url;
+  vid.load();
 
-  // Usar reproductor nativo (sin Plyr para evitar CORS)
+  // Manejar seek con barra de progreso
+  let seekTimer=null;
+  vid.onseeking=function(){
+    // Al mover la barra, dar tiempo al servidor para responder
+    if(seekTimer)clearTimeout(seekTimer);
+    seekTimer=setTimeout(()=>{
+      // Si después de 5s sigue sin reproducir, recargar en esa posición
+      if(vid.paused||vid.readyState<3){
+        const t=vid.currentTime;
+        vid.src=v.url;
+        vid.load();
+        vid.currentTime=t;
+        vid.play().catch(()=>{});
+      }
+    },5000);
+  };
+  vid.onseeked=function(){
+    if(seekTimer)clearTimeout(seekTimer);
+    vid.play().catch(()=>{});
+  };
+  vid.onerror=function(){
+    const t=vid.currentTime||0;
+    vid.src=v.url;
+    vid.load();
+    vid.currentTime=t;
+    vid.play().catch(()=>{});
+  };
+  vid.onwaiting=function(){
+    // Si se queda en buffering más de 8s, recargar
+    if(seekTimer)clearTimeout(seekTimer);
+    seekTimer=setTimeout(()=>{
+      if(vid.paused||vid.readyState<3){
+        const t=vid.currentTime;
+        vid.src=v.url;
+        vid.load();
+        vid.currentTime=t;
+        vid.play().catch(()=>{});
+      }
+    },8000);
+  };
+
   vid.play().catch(()=>{});
 
   document.getElementById('p-title').textContent=v.titulo;
@@ -1091,5 +1132,5 @@ window.addEventListener('popstate',()=>{
 async function init(){await loadVideos();updateFavCount();checkHash()}
 init();
 </script>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a26ae06dfd7bfa94',t:'MTc4NTk4NjEyMQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
