@@ -8,8 +8,7 @@
 <link rel="icon" href="icon-192.svg">
 <link rel="apple-touch-icon" href="icon-192.svg">
 <title>Recordings VIP</title>
-<link rel="preconnect" href="https://cdn.plyr.io">
-<link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css">
+
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -222,18 +221,11 @@ body.light .ct{background:var(--card2)}
 .ctb:hover{transform:scale(.97)}
 .ctb svg{width:14px;height:14px;fill:#fff}
 
-/* ─── PLYR ─── */
-.plyr{--plyr-color-main:var(--p);border-radius:var(--r);overflow:hidden}
-.plyr__control--overlaid{
-  background:linear-gradient(135deg,var(--p),var(--p3))!important;
-  box-shadow:0 4px 25px #a855f760!important;padding:20px!important;
-  border-radius:50%!important;opacity:.9!important}
-.plyr__control--overlaid:hover{opacity:1!important;transform:scale(1.1)!important}
-.plyr__controls{background:linear-gradient(transparent,#000a 30%,#000d)!important;
-  padding:12px 14px 10px!important}
-.plyr__time{font-size:12px!important;font-weight:600!important}
-.plyr__menu__container{background:var(--card2)!important;
-  border:1px solid var(--border2)!important;border-radius:10px!important}
+/* ─── VIDEO PLAYER NATIVO ─── */
+.pc video{width:100%;display:block;border-radius:var(--r);background:#000}
+.pc video::-webkit-media-controls-panel{background:linear-gradient(transparent,#000a 30%,#000d)}
+.pc video::-webkit-media-controls-play-button{filter:brightness(1.2)}
+.pc video::-webkit-media-controls-timeline{accent-color:var(--p)}
 
 /* ─── FAB ─── */
 .fab{position:fixed;bottom:22px;right:18px;width:52px;height:52px;
@@ -517,7 +509,7 @@ body.light .ct{background:var(--card2)}
 <!-- PLAYER -->
 <div class="pp" id="player">
   <div class="bk" onclick="closePlayer()">&#8592; Galeria</div>
-  <div class="pc"><video id="video" playsinline controls></video></div>
+  <div class="pc"><video id="video" playsinline controls preload="auto"></video></div>
   <div class="pd">
     <h2 id="p-title"></h2>
     <div class="ig">
@@ -613,9 +605,9 @@ body.light .ct{background:var(--card2)}
   <p>&copy; 2026 &mdash; <a href="https://t.me/+YdEKx1OxiKM3Nzg5" target="_blank">Telegram</a></p>
 </div>
 
-<script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
+
 <script>
-let V=[],plyr=null;
+let V=[];
 const PH="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 9'%3E%3Crect fill='%230e0e18' width='16' height='9'/%3E%3C/svg%3E";
 const PER_PAGE=20;
 let curPage=1,curFilter='all',curSort='recent';
@@ -815,10 +807,8 @@ let curVideoIdx=-1;
 let miniActive=false;
 
 function resetVideoElement(){
-  // Destruir Plyr y recrear el elemento video limpio
-  if(plyr){try{plyr.destroy()}catch(e){}}
   const pc=document.querySelector('.pc');
-  pc.innerHTML='<video id="video" playsinline controls></video>';
+  pc.innerHTML='<video id="video" playsinline controls preload="auto"></video>';
 }
 
 function play(i){
@@ -838,11 +828,8 @@ function play(i){
   const vid=document.getElementById('video');
   vid.src=v.url;
 
-  plyr=new Plyr(vid,{
-    controls:['play-large','play','progress','current-time','duration','mute','volume','settings','fullscreen'],
-    settings:['speed'],speed:{selected:1,options:[.5,.75,1,1.25,1.5,2]},
-    tooltips:{controls:!0,seek:!0},keyboard:{focused:!0,global:!0},
-    iconUrl:'https://cdn.plyr.io/3.7.8/plyr.svg'});
+  // Usar reproductor nativo (sin Plyr para evitar CORS)
+  vid.play().catch(()=>{});
 
   document.getElementById('p-title').textContent=v.titulo;
   document.getElementById('p-model').textContent=v.modelo;
