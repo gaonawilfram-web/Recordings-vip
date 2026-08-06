@@ -3,7 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<meta name="theme-color" content="#08080d">
+<meta name="theme-color" content="#7c3aed">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.svg">
+<link rel="apple-touch-icon" href="icon-192.svg">
 <title>Recordings VIP</title>
 <link rel="preconnect" href="https://cdn.plyr.io">
 <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css">
@@ -353,6 +356,49 @@ body.light .ct{background:var(--card2)}
 .miniplayer .mp-close:hover{background:#fff1;color:#fff}
 @media(max-width:500px){.miniplayer{width:200px;bottom:70px;right:10px}}
 
+/* ─── ADMIN DASHBOARD ─── */
+.admin{display:none;max-width:700px;margin:0 auto;padding:14px}
+.admin.on{display:block}
+.admin-login{text-align:center;padding:40px 20px}
+.admin-login input{background:var(--card2);border:1px solid var(--border2);
+  color:var(--t);padding:12px 18px;border-radius:10px;font-size:14px;
+  outline:none;width:100%;max-width:280px;text-align:center;margin-bottom:12px}
+.admin-login input:focus{border-color:var(--p)}
+.admin-login button{padding:10px 30px;background:var(--p2);color:#fff;
+  border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer}
+.admin-hdr{display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:14px}
+.admin-hdr h2{font-size:16px;font-weight:700;color:var(--t)}
+.admin-hdr .admin-out{font-size:11px;color:var(--mt);cursor:pointer;
+  padding:6px 12px;border:1px solid var(--border);border-radius:8px}
+.admin-hdr .admin-out:hover{border-color:var(--p);color:var(--t)}
+.admin-item{background:var(--card);border:1px solid var(--border);
+  border-radius:10px;padding:12px;margin-bottom:8px}
+.admin-item .ai-top{display:flex;justify-content:space-between;align-items:center}
+.admin-item .ai-title{font-size:13px;font-weight:600;color:var(--t)}
+.admin-item .ai-meta{font-size:10px;color:var(--mt);margin-top:4px}
+.admin-item .ai-actions{display:flex;gap:6px}
+.admin-item .ai-btn{padding:5px 10px;border-radius:6px;font-size:10px;
+  font-weight:600;cursor:pointer;border:1px solid var(--border);
+  background:transparent;color:var(--t2);transition:.2s}
+.admin-item .ai-btn:hover{border-color:var(--p);color:var(--p)}
+.admin-item .ai-btn.del{color:var(--pk)}
+.admin-item .ai-btn.del:hover{border-color:var(--pk)}
+.admin-add{background:var(--card);border:1px dashed var(--border2);
+  border-radius:10px;padding:14px;margin-bottom:12px}
+.admin-add h3{font-size:12px;color:var(--t2);margin-bottom:10px}
+.admin-add input{background:var(--bg);border:1px solid var(--border);
+  color:var(--t);padding:8px 12px;border-radius:8px;font-size:12px;
+  outline:none;width:100%;margin-bottom:6px}
+.admin-add input:focus{border-color:var(--p)}
+.admin-add button{padding:8px 20px;background:var(--gn);color:#fff;
+  border:none;border-radius:8px;font-size:12px;font-weight:700;
+  cursor:pointer;margin-top:4px}
+.admin-push{width:100%;padding:12px;background:var(--p2);color:#fff;
+  border:none;border-radius:10px;font-size:13px;font-weight:700;
+  cursor:pointer;margin-top:10px;transition:.2s}
+.admin-push:hover{background:var(--p)}
+
 /* ─── FOOTER ─── */
 .ft{text-align:center;padding:28px 16px 88px;font-size:10px;
   border-top:1px solid var(--border);margin-top:36px;color:var(--mt)}
@@ -528,6 +574,37 @@ body.light .ct{background:var(--card2)}
 <a class="fab" href="https://t.me/+YdEKx1OxiKM3Nzg5" target="_blank" id="fab">
   <svg viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0h-.056zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 01.171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
 </a>
+
+<!-- ADMIN DASHBOARD -->
+<div class="admin" id="admin">
+  <div id="admin-auth">
+    <div class="admin-login">
+      <div style="font-size:36px;margin-bottom:10px">🔒</div>
+      <h2 style="margin-bottom:16px;color:var(--t)">Panel Admin</h2>
+      <input type="password" id="admin-pass" placeholder="Contraseña" 
+             onkeydown="if(event.key==='Enter')adminLogin()">
+      <br><button onclick="adminLogin()">Entrar</button>
+    </div>
+  </div>
+  <div id="admin-panel" style="display:none">
+    <div class="admin-hdr">
+      <h2>Dashboard</h2>
+      <div class="admin-out" onclick="adminLogout()">Salir</div>
+    </div>
+    <div class="admin-add">
+      <h3>Agregar video</h3>
+      <input id="a-titulo" placeholder="Titulo">
+      <input id="a-modelo" placeholder="Modelo">
+      <input id="a-fecha" placeholder="Fecha (DD/MM/AA)">
+      <input id="a-duracion" placeholder="Duracion (ej: 45:30)">
+      <input id="a-url" placeholder="URL del video">
+      <input id="a-thumb" placeholder="URL thumbnail (opcional)">
+      <button onclick="adminAdd()">Agregar</button>
+    </div>
+    <div id="admin-list"></div>
+    <button class="admin-push" onclick="adminPush()">Publicar cambios en GitHub</button>
+  </div>
+</div>
 
 <div class="toast" id="toast"></div>
 
@@ -893,17 +970,135 @@ function shareVideo(){
   else{toast('No se pudo compartir')}
 }
 
-// ── HASH ROUTING ──
+// ── ADMIN DASHBOARD ──
+const ADMIN_PASS='recvip2026'; // Cambiar esta contraseña
+
+function showAdmin(){
+  ['gallery','pag','fbar','sec-title','fav-bar','profile','player'].forEach(id=>{
+    const e=document.getElementById(id);if(e){e.style.display='none';e.classList.remove('on')}});
+  document.querySelector('.stats').parentElement.style.display='none';
+  document.getElementById('hd').style.display='none';
+  document.getElementById('fab').style.display='none';
+  document.getElementById('admin').classList.add('on');
+  if(sessionStorage.getItem('admin_auth')==='1'){
+    document.getElementById('admin-auth').style.display='none';
+    document.getElementById('admin-panel').style.display='';
+    adminRender();
+  }
+}
+function adminLogin(){
+  const p=document.getElementById('admin-pass').value;
+  if(p===ADMIN_PASS){
+    sessionStorage.setItem('admin_auth','1');
+    document.getElementById('admin-auth').style.display='none';
+    document.getElementById('admin-panel').style.display='';
+    adminRender();toast('Bienvenido');
+  }else{toast('Contraseña incorrecta')}
+}
+function adminLogout(){
+  sessionStorage.removeItem('admin_auth');
+  document.getElementById('admin').classList.remove('on');
+  ['gallery','pag','fbar','sec-title','fav-bar'].forEach(id=>{
+    const e=document.getElementById(id);if(e)e.style.display=''});
+  document.querySelector('.stats').parentElement.style.display='';
+  document.getElementById('hd').style.display='';
+  document.getElementById('fab').style.display='';
+  history.pushState(null,'','#');
+}
+function adminRender(){
+  const el=document.getElementById('admin-list');
+  if(!V.length){el.innerHTML='<div class="empty">Sin videos</div>';return}
+  el.innerHTML=[...V].reverse().map((v,ri)=>{
+    const i=V.length-1-ri;
+    return `<div class="admin-item">
+      <div class="ai-top">
+        <div>
+          <div class="ai-title">${v.titulo}</div>
+          <div class="ai-meta">${v.modelo} | ${v.fecha} | ${v.duracion}</div>
+        </div>
+        <div class="ai-actions">
+          <div class="ai-btn" onclick="adminEdit(${i})">Editar</div>
+          <div class="ai-btn del" onclick="adminDel(${i})">Eliminar</div>
+        </div>
+      </div>
+    </div>`}).join('');
+}
+function adminAdd(){
+  const t=document.getElementById('a-titulo').value.trim();
+  const m=document.getElementById('a-modelo').value.trim();
+  const f=document.getElementById('a-fecha').value.trim();
+  const d=document.getElementById('a-duracion').value.trim();
+  const u=document.getElementById('a-url').value.trim();
+  const th=document.getElementById('a-thumb').value.trim();
+  if(!t||!m||!u){toast('Titulo, modelo y URL requeridos');return}
+  V.push({titulo:t,modelo:m,fecha:f||new Date().toLocaleDateString('es'),
+    duracion:d||'00:00',thumb:th,url:u});
+  ['a-titulo','a-modelo','a-fecha','a-duracion','a-url','a-thumb'].forEach(id=>
+    document.getElementById(id).value='');
+  adminRender();toast('Video agregado');
+}
+function adminEdit(i){
+  const v=V[i];
+  const t=prompt('Titulo:',v.titulo);if(t===null)return;
+  const m=prompt('Modelo:',v.modelo);if(m===null)return;
+  const f=prompt('Fecha:',v.fecha);if(f===null)return;
+  const d=prompt('Duracion:',v.duracion);if(d===null)return;
+  v.titulo=t;v.modelo=m;v.fecha=f;v.duracion=d;
+  adminRender();toast('Video editado');
+}
+function adminDel(i){
+  if(!confirm('Eliminar "'+V[i].titulo+'"?'))return;
+  V.splice(i,1);adminRender();toast('Video eliminado');
+}
+async function adminPush(){
+  // Necesita token de GitHub en localStorage
+  let gh=JSON.parse(localStorage.getItem('gh_config')||'{}');
+  if(!gh.user||!gh.repo||!gh.token){
+    const u=prompt('Usuario GitHub:');if(!u)return;
+    const r=prompt('Nombre del repo:');if(!r)return;
+    const t=prompt('Token GitHub:');if(!t)return;
+    gh={user:u,repo:r,token:t};
+    localStorage.setItem('gh_config',JSON.stringify(gh));
+  }
+  const api=`https://api.github.com/repos/${gh.user}/${gh.repo}/contents/videos.json`;
+  const headers={'Authorization':'token '+gh.token,'Accept':'application/vnd.github.v3+json'};
+  toast('Publicando...');
+  try{
+    const r1=await fetch(api,{headers});
+    const sha=r1.status===200?(await r1.json()).sha:'';
+    const content=btoa(unescape(encodeURIComponent(JSON.stringify(V,null,2))));
+    const body={message:'Update videos - '+V.length+' total',content};
+    if(sha)body.sha=sha;
+    const r2=await fetch(api,{method:'PUT',headers,body:JSON.stringify(body)});
+    if(r2.status===200||r2.status===201){toast('Publicado en GitHub')}
+    else{const e=await r2.json();toast('Error: '+(e.message||r2.status))}
+  }catch(e){toast('Error: '+e.message)}
+}
+
+// ── PWA Service Worker ──
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('sw.js').catch(()=>{});
+}
+
+// ── HASH ROUTING (updated with #admin) ──
 function checkHash(){
   const h=location.hash;
-  if(h.startsWith('#video/')){const i=parseInt(h.split('/')[1]);
+  if(h==='#admin'){showAdmin()}
+  else if(h.startsWith('#video/')){const i=parseInt(h.split('/')[1]);
     if(!isNaN(i)&&i>=0&&i<V.length)play(i)}
   else if(h.startsWith('#profile/')){const m=decodeURIComponent(h.split('/').slice(1).join('/'));
     if(m)openProfile(m)}
 }
 window.addEventListener('hashchange',checkHash);
 window.addEventListener('popstate',()=>{
-  if(!location.hash||location.hash==='#'){closePlayer();closeProfile();render(curFilter,curPage)}
+  if(!location.hash||location.hash==='#'){closePlayer();closeProfile();
+    document.getElementById('admin').classList.remove('on');
+    ['gallery','pag','fbar','sec-title','fav-bar'].forEach(id=>{
+      const e=document.getElementById(id);if(e)e.style.display=''});
+    document.querySelector('.stats').parentElement.style.display='';
+    document.getElementById('hd').style.display='';
+    document.getElementById('fab').style.display='';
+    render(curFilter,curPage)}
   else checkHash()});
 
 async function init(){await loadVideos();updateFavCount();checkHash()}
